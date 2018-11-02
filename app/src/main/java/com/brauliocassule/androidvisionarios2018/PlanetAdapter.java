@@ -20,7 +20,7 @@ public class PlanetAdapter extends RecyclerView.Adapter<PlanetAdapter.PlanetView
     public PlanetAdapter(Context context) {
         this.mContext = context;
         planets = new ArrayList<>();
-        planets.add(new Planet(R.drawable.earth, "Terra", "Habitantes: 7.5 Biloes"));
+        planets.add(new Planet(R.drawable.earth, "Terra", "Habitantes: 7.5 Bilhões"));
         planets.add(new Planet(R.drawable.mercury, "Mercurio", "Habitantes: Uma formiga"));
         planets.add(new Planet(R.drawable.saturn, "Saturno", "Distancia: 8.000 ano de luz"));
     }
