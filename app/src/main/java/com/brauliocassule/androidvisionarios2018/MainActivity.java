@@ -20,6 +20,8 @@ public class MainActivity extends AppCompatActivity {
         adapter = new PlanetAdapter(this);
         planetRecyclerView.setAdapter(adapter);
     }
+
+
 }
 
 

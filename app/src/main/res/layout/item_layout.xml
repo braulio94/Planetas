@@ -21,7 +21,7 @@
             android:src="@drawable/saturn" />
 
         <TextView
-            android:id="@+id/plate_name"
+            android:id="@+id/planet_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Planeta Saturno"

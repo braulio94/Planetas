@@ -1,21 +1,13 @@
 package com.brauliocassule.androidvisionarios2018;
 
 public class Planet {
-    int res;
     String name;
     String description;
+    int res;
 
-    public Planet(int res, String name, String description) {
-        this.res = res;
+    public Planet(String name, String description, int res) {
         this.name = name;
         this.description = description;
-    }
-
-    public int getRes() {
-        return res;
-    }
-
-    public void setRes(int res) {
         this.res = res;
     }
 
@@ -33,5 +25,13 @@ public class Planet {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public int getRes() {
+        return res;
+    }
+
+    public void setRes(int res) {
+        this.res = res;
     }
 }
