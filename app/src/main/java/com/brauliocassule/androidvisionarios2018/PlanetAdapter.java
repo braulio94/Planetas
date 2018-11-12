@@ -59,6 +59,10 @@ public class PlanetAdapter extends RecyclerView.Adapter<PlanetAdapter.PlanetView
         TextView description;
         ImageView image;
 
+        //Shared Preferences
+        //Database Local (SQLite, Realm, Room...)
+
+
         public PlanetViewHolder(View itemView){
             super(itemView);
             name = itemView.findViewById(R.id.planet_name);
@@ -69,7 +73,8 @@ public class PlanetAdapter extends RecyclerView.Adapter<PlanetAdapter.PlanetView
         public void openActivity(Planet planet){
             Intent intent = new Intent(context, PlanetDetailActivity.class);
             intent.putExtra("plane_name", planet.getName());
-            Log.i("Adapter", "O que tem no planet? " + planet.getName());
+            intent.putExtra("planet_description", planet.getDescription());
+            intent.putExtra("planet_image", planet.getRes());
             context.startActivity(intent);
         }
     }

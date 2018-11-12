@@ -13,8 +13,7 @@
         android:layout_height="wrap_content"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:elevation="7dp"
-        app:cardBackgroundColor="#333"
-        app:cardCornerRadius="10dp">
+        app:cardBackgroundColor="#333">
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
