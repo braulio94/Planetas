@@ -1,33 +1,38 @@
 package com.brauliocassule.androidvisionarios2018;
 
-
+import android.Manifest;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
+import java.io.File;
 
 public class MainActivity extends AppCompatActivity {
 
     RecyclerView planetRecyclerView;
     PlanetAdapter adapter;
-    ImageView addImageView;
     Dialog addItemDialog;
-    String mCurrentPhotoPath;
-    int GALLERY_INTENT = 12;
+    String path;
+    ImageView newImageView;
+    TextView newTitle;
+    TextView newDescription;
+    Button saveButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,59 +55,57 @@ public class MainActivity extends AppCompatActivity {
     public void showDialog(){
         addItemDialog = new Dialog(MainActivity.this);
         addItemDialog.setContentView(R.layout.add_item_dialog);
-        addImageView = addItemDialog.findViewById(R.id.new_image);
-        addImageView.setOnClickListener(new View.OnClickListener() {
+
+        newImageView = addItemDialog.findViewById(R.id.new_image);
+        newTitle = addItemDialog.findViewById(R.id.new_title);
+        newDescription = addItemDialog.findViewById(R.id.new_description);
+        saveButton = addItemDialog.findViewById(R.id.save_button);
+
+        newImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent galleryIntent = new Intent(Intent.ACTION_PICK);
-                galleryIntent.setType("image/*");
-                startActivityForResult(galleryIntent, GALLERY_INTENT);
+                if(isStoragePermissionGranted(MainActivity.this)){
+                    Intent galleryIntent = new Intent(Intent.ACTION_PICK);
+                    galleryIntent.setType("image/*");
+                    startActivityForResult(galleryIntent, 12);
+                } else {
+                    ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 8);
+                }
             }
         });
+
+        saveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addItemDialog.dismiss();
+            }
+        });
+
         addItemDialog.setTitle("Adicionar novo item");
         addItemDialog.show();
     }
 
-    private void getImage() {
-        int targetW = addImageView.getWidth();
-        int targetH = addImageView.getHeight();
-
-        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-        bmOptions.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
-        int photoW = bmOptions.outWidth;
-        int photoH = bmOptions.outHeight;
-        int scaleFactor = Math.min(photoW / targetW, photoH / targetH);
-        bmOptions.inJustDecodeBounds = false;
-        bmOptions.inSampleSize = scaleFactor;
-        //bmOptions.inPurgeable = true;
-        Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
-        //bitmap = ImageHelper.rotatedBitmap(bitmap, mCurrentPhotoPath);
-        addImageView.setImageBitmap(bitmap);
-    }
-
-    private String getRealPathFromURI(Uri contentURI) {
-        String result;
-        Cursor cursor = getContentResolver().query(contentURI, null, null, null, null);
-        if (cursor == null) {
-            result = contentURI.getPath();
-        } else {
-            cursor.moveToFirst();
-            int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
-            result = cursor.getString(idx);
-            cursor.close();
-        }
-        return result;
+    public static boolean isStoragePermissionGranted(Context context) {
+        return ActivityCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if(data != null && requestCode == RESULT_OK){
+        super.onActivityResult(requestCode, resultCode, data);
+        if(data != null && resultCode == RESULT_OK){
             Uri uri = data.getData();
-            mCurrentPhotoPath = getRealPathFromURI(uri);
-            getImage();
+            path = getRealPathFromURI(uri);
+            File f = new File(path);
+            Picasso.get().load(f).into(newImageView);
         }
     }
+
+    private String getRealPathFromURI(Uri contentURI) {
+        Cursor cursor = getContentResolver().query(contentURI, null, null, null, null);
+        cursor.moveToFirst();
+        int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+        String result = cursor.getString(idx);
+        cursor.close();
+        return result;
+    }
 }
-
-
