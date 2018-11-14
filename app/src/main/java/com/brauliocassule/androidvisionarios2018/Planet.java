@@ -3,12 +3,12 @@ package com.brauliocassule.androidvisionarios2018;
 public class Planet {
     String name;
     String description;
-    int res;
+    String path;
 
-    public Planet(String name, String description, int res) {
+    public Planet(String name, String description, String path) {
         this.name = name;
         this.description = description;
-        this.res = res;
+        this.path = path;
     }
 
     public String getName() {
@@ -27,11 +27,11 @@ public class Planet {
         this.description = description;
     }
 
-    public int getRes() {
-        return res;
+    public String getPath() {
+        return path;
     }
 
-    public void setRes(int res) {
-        this.res = res;
+    public void setPath(String path) {
+        this.path = path;
     }
 }

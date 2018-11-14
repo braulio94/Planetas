@@ -11,6 +11,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,9 +25,6 @@ public class PlanetAdapter extends RecyclerView.Adapter<PlanetAdapter.PlanetView
     public PlanetAdapter(Context ctx) {
         this.context = ctx;
         this.planets = new ArrayList<>();
-        planets.add(new Planet("Terra", "Planet com pessoas",R.drawable.earth ));
-        planets.add(new Planet("Jupiter", "Planeta a 8 mil anos de luz", R.drawable.jupiter));
-        planets.add(new Planet("Marte", "Planeta vermelho", R.drawable.mars));
     }
 
     @NonNull
@@ -37,7 +37,9 @@ public class PlanetAdapter extends RecyclerView.Adapter<PlanetAdapter.PlanetView
     @Override
     public void onBindViewHolder(@NonNull final PlanetViewHolder holder, int position) {
         final Planet planet = planets.get(position);
-        holder.image.setImageResource(planet.res);
+        //Codigo de hoge
+        Picasso.get().load(new File(planet.path)).into(holder.image);
+
         holder.name.setText(planet.name);
         holder.description.setText(planet.description);
         holder.image.setOnClickListener(new View.OnClickListener() {
@@ -74,8 +76,8 @@ public class PlanetAdapter extends RecyclerView.Adapter<PlanetAdapter.PlanetView
             Intent intent = new Intent(context, PlanetDetailActivity.class);
             intent.putExtra("plane_name", planet.getName());
             intent.putExtra("planet_description", planet.getDescription());
-            intent.putExtra("planet_image", planet.getRes());
-            context.startActivity(intent);
+            //intent.putExtra("planet_image", planet.getRes());
+            //context.startActivity(intent);
         }
     }
 }
