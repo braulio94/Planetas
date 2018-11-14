@@ -1,8 +1,8 @@
 package com.brauliocassule.androidvisionarios2018;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -15,23 +15,31 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
+
 import java.io.File;
 
 public class MainActivity extends AppCompatActivity {
 
+    //https://github.com/braulio94/Planetas
+    //Picasso
+    //https://github.com/square/Picasso
+    //Gson
+    //https://github.com/google/gson
+
     RecyclerView planetRecyclerView;
     PlanetAdapter adapter;
     Dialog addItemDialog;
-    String path;
-    ImageView newImageView;
-    TextView newTitle;
-    TextView newDescription;
+    ImageView newImage;
+    EditText newTitle;
+    EditText newDescription;
     Button saveButton;
 
     @Override
@@ -56,28 +64,29 @@ public class MainActivity extends AppCompatActivity {
         addItemDialog = new Dialog(MainActivity.this);
         addItemDialog.setContentView(R.layout.add_item_dialog);
 
-        newImageView = addItemDialog.findViewById(R.id.new_image);
-        newTitle = addItemDialog.findViewById(R.id.new_title);
-        newDescription = addItemDialog.findViewById(R.id.new_description);
-        saveButton = addItemDialog.findViewById(R.id.save_button);
-
-        newImageView.setOnClickListener(new View.OnClickListener() {
+        newImage = addItemDialog.findViewById(R.id.new_image);
+        newImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(isStoragePermissionGranted(MainActivity.this)){
+                if(isStoragePermissionGranted()){
                     Intent galleryIntent = new Intent(Intent.ACTION_PICK);
                     galleryIntent.setType("image/*");
                     startActivityForResult(galleryIntent, 12);
                 } else {
-                    ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 8);
+                    Toast.makeText(MainActivity.this, "Voce nao tem permissao", Toast.LENGTH_SHORT).show();
+                    ActivityCompat.requestPermissions(
+                            MainActivity.this,
+                            new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                            12);
                 }
             }
         });
 
+        saveButton = addItemDialog.findViewById(R.id.save_button);
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addItemDialog.dismiss();
+               addItemDialog.dismiss();
             }
         });
 
@@ -85,27 +94,32 @@ public class MainActivity extends AppCompatActivity {
         addItemDialog.show();
     }
 
-    public static boolean isStoragePermissionGranted(Context context) {
-        return ActivityCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
+    public boolean isStoragePermissionGranted(){
+        return ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.READ_EXTERNAL_STORAGE)
+                == PackageManager.PERMISSION_GRANTED;
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(data != null && resultCode == RESULT_OK){
+        if(data != null){
             Uri uri = data.getData();
-            path = getRealPathFromURI(uri);
-            File f = new File(path);
-            Picasso.get().load(f).into(newImageView);
+            Log.i("MainActivity", "Localizacao do Ficheiro: " + uri.getPath());
+            String path = getRealPathFromURI(uri);
+            File file = new File(path);
+            Picasso.get().load(file).into(newImage);
         }
     }
 
     private String getRealPathFromURI(Uri contentURI) {
-        Cursor cursor = getContentResolver().query(contentURI, null, null, null, null);
+        Cursor cursor = getContentResolver().
+                query(contentURI, null, null, null, null);
         cursor.moveToFirst();
         int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
         String result = cursor.getString(idx);
         cursor.close();
         return result;
     }
+
 }
