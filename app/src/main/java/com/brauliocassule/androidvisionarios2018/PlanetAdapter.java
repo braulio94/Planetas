@@ -24,9 +24,9 @@ public class PlanetAdapter extends RecyclerView.Adapter<PlanetAdapter.PlanetView
     public PlanetAdapter(Context ctx) {
         this.context = ctx;
         this.planets = new ArrayList<>();
-        List<Planet> savedPlanets = PlanetPreferences.getPlanetList("planets", context);
-        if (savedPlanets != null){
-            this.planets.addAll(savedPlanets);
+        List<Planet> savedList = PlanetSharedPreferences.loadPlanetList(context, "planets");
+        if (savedList != null){
+            planets.addAll(savedList);
         }
     }
 

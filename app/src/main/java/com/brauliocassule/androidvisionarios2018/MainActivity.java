@@ -3,7 +3,9 @@ package com.brauliocassule.androidvisionarios2018;
 import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
@@ -108,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
               new Planet(title, description, path)
             );
             adapter.notifyDataSetChanged();
-            PlanetPreferences.savePlanetList(adapter.planets, "planets", MainActivity.this);
+            PlanetSharedPreferences.savePlanetList(adapter.planets, MainActivity.this, "planets");
             path = null;
             addItemDialog.dismiss();
         }
