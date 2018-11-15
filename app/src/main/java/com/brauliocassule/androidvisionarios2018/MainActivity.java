@@ -108,6 +108,7 @@ public class MainActivity extends AppCompatActivity {
               new Planet(title, description, path)
             );
             adapter.notifyDataSetChanged();
+            PlanetPreferences.savePlanetList(adapter.planets, "planets", MainActivity.this);
             path = null;
             addItemDialog.dismiss();
         }
